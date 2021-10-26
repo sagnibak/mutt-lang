@@ -1,0 +1,24 @@
+program = { (module_stmt)* }
+
+module_stmt = { "module" ~ ident ~ "where" ~ (expr)* ~ "end" }
+
+integer = @{ "_"? ~ ASCII_DIGIT+ }
+decimal = @{ "_"? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* }
+ident = @{
+	!( "end" )
+	~ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")*
+}
+string = @{ "'" ~ ( "''" | (!"'" ~ ANY) )* ~ "'" }
+
+expr = {
+	move_expr
+    | assign_expr
+    | ident
+}
+
+source = { expr | decimal | integer | ident }
+target = { ident }
+move_expr = { "move" ~ source ~ "into" ~ target }
+assign_expr = { "assign" ~ source ~ "to" ~ target }
+
+WHITESPACE = _{ " " | "\t" | "\n" }
